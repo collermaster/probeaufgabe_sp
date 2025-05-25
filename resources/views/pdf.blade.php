@@ -48,5 +48,24 @@
         </tr>
     </tbody>
 </table>
+<h2>Aufgabe 3</h2>
+<table>
+    <thead>
+    <tr>
+        <th>Platz</th>
+        <th>Hardware specs (Version, RAM, CPU, Root-Speicher)</th>
+        <th>Anzahl der verschiedenen Serial numbers</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach($sortedSpecsToSerial as $specs => $serial)
+        <tr>
+            <td>{{$loop->iteration}}</td>
+            <td>{{$specs}}</td>
+            <td>{{count($serial)}}</td>
+            @endforeach
+        </tr>
+    </tbody>
+</table>
 </body>
 </html>

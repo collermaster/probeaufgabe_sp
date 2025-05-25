@@ -38,6 +38,8 @@ class AnalyzeLog extends Command
         global $serialToMacs;
         global $sortedSerialToMacs;
         global $sortedSerialCount;
+        global $hardwareSpecs;
+        global $specsToSerial;
         global $deviceMAC;      //variablen global zur verfügung gestellt, um nach der while schleife damit zu arbeiten
 
         while (($line = fgets($handle)) !== false) {
@@ -59,10 +61,22 @@ class AnalyzeLog extends Command
 
             if (preg_match('/specs=([a-zA-Z0-9\/+]+)/', $line, $match)) {
                 $data = json_decode(@gzdecode(base64_decode($match[1])), true);
+                //Das gehört zu Aufgabe 2
                 if (isset($data['mac'])) {
                     $deviceMAC = $data['mac'];
+                    $serialToMacs[$serial][$deviceMAC] = true;
                 }
-                $serialToMacs[$serial][$deviceMAC] = true;
+                //Und das hier zu Aufgabe 3
+                //für Aufgabe 3 würde ich genau so vorgehen wie in Aufgabe 2 nur das ich die Serial number der Hardware zu weise
+                //da nicht expliziert beschreiben wird wie ich die Hardware Klassifizieren soll werden ich nach Firmwareversion, Arbeitsspeicher, Prozessor und dem Root-Festplattenspeicher gehen
+                //da das die Information sind die mich Interessieren
+
+                //In einer echten Anwendung würde ich die 4 Punkte getrennt speichern, damit ich diese dann in der PDF vernünftig und leserlicher Darstellen kann
+                //außerdem würde ich RAM und Root-Speicher auf- bzw. abrunden und in GB ausgeben, wodurch ich größer Gruppen bekomme.
+                if (isset($data['fwversion']) && isset($data['mem']) && isset($data['cpu']) && isset($data['disk_root'])){
+                    $hardwareSpecs = 'Version: ' . $data['fwversion'] . ' RAM: ' . $data['mem'] . ' CPU: ' . $data['cpu'] . ' Root-Speicher: ' . $data['disk_root'];
+                    $specsToSerial[$hardwareSpecs][$serial] = true;
+                }
             }
         }
         fclose($handle);
@@ -79,6 +93,10 @@ class AnalyzeLog extends Command
             ->sortDesc()
             ->take(10);
 //        var_dump($sortedSerialToMacs);
+        $sortedSpecsToSerial = collect($specsToSerial)
+            ->sortDesc()
+            ->take(10);
+//        var_dump($sortedSpecsToSerial);
 
 
         //hier würde ich jetzt die aufforderung einauen die die information in einer PDF speichert, dazu würde ich dann eine view.blade.php erstellen die den Content des PDFs erzeugt
@@ -87,6 +105,7 @@ class AnalyzeLog extends Command
         $pdf = Pdf::loadView('pdf', [
             'sortedSerialCount' => $sortedSerialCount,
             'sortedSerialToMacs' => $sortedSerialToMacs,
+            'sortedSpecsToSerial' => $sortedSpecsToSerial
         ]);
 
         $pdf->save('storage/analyzer/analyzedLog.pdf');

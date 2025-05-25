@@ -9,7 +9,7 @@ aber ich habe versucht, so gut es geht, meine Gedanken im Nachhinein zu dokument
 
 ## Aufgabe 1
 **Umsetzung in:** `app/Console/Commands/AnalyzeLog.php`
-## Vorgehen
+### Vorgehen
 Ich habe mit Regex die Seriennummern extrahiert und in einem Array gezählt (`serial => count`).  
 Diese Daten habe ich sortiert und als Collection an die Blade-View übergeben, um sie in der PDF darzustellen.
 ### Gedanken:
@@ -18,7 +18,7 @@ Das habe ich dann in einem Array gespeichert und an die Blade-Datei übergeben, 
 
 ## Aufgabe 2
 **Umsetzung in:** `app/Console/Commands/AnalyzeLog.php`
-## Vorgehen
+### Vorgehen
 Um herauszufinden, ob eine Serial Number nur von einem Gerät benutzt wird, habe ich einfach bei jedem Zugriff die MAC-Adresse  
 mit der Serial Number in einem Array verknüpft. Wenn eine Serial Number bereits eine MAC-Adresse hatte, wurde die neue MAC-Adresse  
 einfach ins Array hinzugefügt. So kann ich dann die MAC-Adressen zählen, um zu sehen, auf wie vielen Geräten die Serial Number  
@@ -32,6 +32,17 @@ Durch das `@` werden diese Warnungen aber ignoriert, dadurch werden eventuell au
 MAC-Adressen so nicht extrahieren konnte. Dazu kommt noch, dass teilweise keine MAC-Adressen eingetragen waren,  
 das habe ich nicht verstanden, wie kann das sein? Auf jeden Fall fehlen dadurch einige Einträge im Ergebnis.  
 Das habe ich dann in einem Array gespeichert und an die Blade-Datei übergeben, damit die PDF erstellt werden kann.
+
+## Aufgabe 3
+**Umsetzung in:** `app/Console/Commands/AnalyzeLog.php`
+### Vorgehen
+Ich habe die Hardware specs in einem String gespeichert und dann ähnlich wie in Aufgabe 2 die Hardware specs und die Serial
+in ein verschachteltes Array gespeichert, so wird jede Serial number nur einmal aufgeführt und ich weiß genau wie viele Unterschiedliche 
+Serials mit gleicher Hardware unterwegs sind
+### Gedanken:
+War relativ einfach, da ich den Code aus der Aufgabe 2 fast so übernehmen konnte. Die auflistung in der PDF war zwar nicht gegeben
+aber ich hab es trotzdem gemacht. Leider nicht besonders Leserlich aber man kann Die Specs erkennen und die Anzahl der Unterschiedlichen 
+Serial numbers ist gegeben. 
 
 
 
