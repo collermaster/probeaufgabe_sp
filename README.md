@@ -1,61 +1,54 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Probeaufgabe für SP
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## Allgemeine Infos
+Erstmal bedanke ich mich für die Möglichkeit, mein Können unter Beweis zu stellen.  
+Es war das erste Mal, dass ich ein Analyse-Tool für Logdateien geschrieben habe, war aber erstaunt, wie gut das am Ende doch geklappt hat.  
+Mir ist dabei aufgefallen, dass es für mich schwer war, während des Arbeitens meine Gedanken aufzuschreiben, deswegen habe ich das immer erst  
+nachdem ich fertig war, gemacht. Dadurch habe ich ein bisschen das Gefühl, dass ich den Hauptgrund der Aufgabe verfehlt habe,  
+aber ich habe versucht, so gut es geht, meine Gedanken im Nachhinein zu dokumentieren.
 
-## About Laravel
+## Aufgabe 1
+**Umsetzung in:** `app/Console/Commands/AnalyzeLog.php`
+## Vorgehen
+Ich habe mit Regex die Seriennummern extrahiert und in einem Array gezählt (`serial => count`).  
+Diese Daten habe ich sortiert und als Collection an die Blade-View übergeben, um sie in der PDF darzustellen.
+### Gedanken:
+War relativ einfach, da ich nur eine Zahlen- und Buchstabenfolge filtern und die Häufigkeit zählen musste.  
+Das habe ich dann in einem Array gespeichert und an die Blade-Datei übergeben, damit die PDF erstellt werden kann.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Aufgabe 2
+**Umsetzung in:** `app/Console/Commands/AnalyzeLog.php`
+## Vorgehen
+Um herauszufinden, ob eine Serial Number nur von einem Gerät benutzt wird, habe ich einfach bei jedem Zugriff die MAC-Adresse  
+mit der Serial Number in einem Array verknüpft. Wenn eine Serial Number bereits eine MAC-Adresse hatte, wurde die neue MAC-Adresse  
+einfach ins Array hinzugefügt. So kann ich dann die MAC-Adressen zählen, um zu sehen, auf wie vielen Geräten die Serial Number  
+installiert ist.  
+### Gedanken:
+Hier hatte ich schon mehr Probleme, die Specs aus der Logdatei zu extrahieren war nicht schwer, ich musste nur herausfinden,  
+wie diese verschlüsselt waren. Das habe ich dann nach gründlichem Lesen des Aufgabenblattes herausgefunden. Danach hatte  
+ich dann ein Problem mit `gzdecode`, da ich dort immer wieder einen Data-Error-Fehler bekommen habe. Das muss damit zusammenhängen,  
+dass die decoden nicht immer erfolgreich war und dort fehlerhafte GZIPs herauskamen.  
+Durch das `@` werden diese Warnungen aber ignoriert, dadurch werden eventuell auch die Ergebnisse verfälscht, da ich meine  
+MAC-Adressen so nicht extrahieren konnte. Dazu kommt noch, dass teilweise keine MAC-Adressen eingetragen waren,  
+das habe ich nicht verstanden, wie kann das sein? Auf jeden Fall fehlen dadurch einige Einträge im Ergebnis.  
+Das habe ich dann in einem Array gespeichert und an die Blade-Datei übergeben, damit die PDF erstellt werden kann.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
 
-## Learning Laravel
+## Versionen
+- Laravel 11
+- node: 22.x.x
+- php 8.4
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## Lokal aufsetzen
+- `composer install` composer package installieren
+- `.env` Datei anlegen (zB mit `cp .env.example .env`)
+- `php artisan key:generate` im Root Ordner ausführen
+- `npm ci` npm installieren
+- Log Datei in `/storage/analyzer/` speichern und in `toBeAnalyzed.log` umbenennen
+- mit dem Befehl `php artisan app:analyze-log` den analyse Prozess einleiten
+- danach entsteht in `/storage/analyzer/` ein PDF mit dem namen `analyzedLog.pdf`
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
-
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-## Laravel Sponsors
-
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
-
-### Premium Partners
-
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## Quelldaten
+`resources`
+`storage`
